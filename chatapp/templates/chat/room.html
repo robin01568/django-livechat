@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-1/4 border-r border-slate-300 h-screen overflow-y-auto bg-white">
+      {% for room in rooms %}
+        <a href="{% url 'room' room_name=room.name %}" class="border-b border-slate-300 h-20 flex justify-start items-center {% if request.path == '/chat/room.name/' %}bg-slate-200
+        {% endif %}">
+          <div class="h-16 w-16 rounded-full shadow-md border border-slate-100">
+            <img src="https://bisswas.com/media/ProductImg/500error.jpg" alt="" class="h-full w-full rounded-full" />
+          </div>
+          <div class="ml-5">
+            <p class="font-semibold">{{ room.name }}</p>
+            <p class="text-gray-500 font-sm">hi lian. how are you</p>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    <div class="w-3/4 flex items-center justify-center">
+      <div class="w-full max-w-2xl bg-white shadow-lg rounded-lg">
+        <!-- Chat Header -->
+        <div class="bg-blue-600 text-white py-4 px-6 rounded-t-lg">
+          <h1 class="text-lg font-bold">Chat Room: {{ room_name }}</h1>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-log" class="p-4 h-96 overflow-y-auto space-y-2 bg-gray-50">
+          {% for message in messages %}
+            <div>
+              <strong>{{ message.user }}</strong>: {{ message.content }}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Chat Input -->
+        <div class="flex items-center border-t border-gray-300 px-4 py-2 bg-gray-100 rounded-b-lg">
+          <input id="chat-message-input" type="text" placeholder="Type your message..." class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <button id="chat-message-submit" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const roomName = '{{ room_name }}'
+      const userIP = '{{ user_ip }}' // The current user's IP address
+      const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + roomName + '/')
+      
+      chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data)
+        const chatLog = document.querySelector('#chat-log')
+      
+        // Compare the sender's IP with the user's IP
+        const messageClass = data.sender_ip === userIP ? 'bg-blue-100 text-blue-800 self-end' : 'bg-gray-100 text-gray-800 self-start'
+      
+        // Add the message dynamically
+        const messageElement = document.createElement('div')
+        messageElement.className = `p-2 rounded-lg max-w-xs break-words ${messageClass}`
+        messageElement.textContent = `${data.sender}: ${data.message} (${data.timestamp})`
+      
+        const wrapper = document.createElement('div')
+        wrapper.className = 'flex flex-col'
+        wrapper.appendChild(messageElement)
+      
+        chatLog.appendChild(wrapper)
+      
+        // Scroll to the latest message
+        chatLog.scrollTop = chatLog.scrollHeight
+      }
+      
+      chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly')
+      }
+      
+      // Function to handle sending a message
+      function sendMessage() {
+        const messageInputDom = document.querySelector('#chat-message-input')
+        const message = messageInputDom.value.trim() // Trim whitespace
+        if (message) {
+          chatSocket.send(JSON.stringify({ message: message }))
+          messageInputDom.value = ''
+        }
+      }
+      
+      // Submit on button click
+      document.querySelector('#chat-message-submit').onclick = function (e) {
+        sendMessage()
+      }
+      
+      // Submit on Enter key press
+      document.querySelector('#chat-message-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault() // Prevent default behavior of Enter key
+          sendMessage()
+        }
+      })
+    </script>
+  </body>
+</html>

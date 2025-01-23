@@ -1,0 +1,57 @@
+<!-- Chat Widget -->
+<div class="fixed bottom-4 right-4" style="z-index: 1000;">
+    <!-- Chat Button -->
+    <div id="chat-button" class="h-12 w-12 bg-blue-600 text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-blue-700 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6M19 8c0 6.627-4.03 9.9-7 9.9S5 14.627 5 8s4.03-9.9 7-9.9 7 3.273 7 9.9z" />
+        </svg>
+    </div>
+
+    <!-- Chat Box -->
+    <div id="chat-box" class="hidden w-80 bg-white shadow-lg rounded-lg overflow-hidden flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-blue-600 text-white py-3 px-4">
+            <h1 class="text-lg font-bold">Chat Support</h1>
+            <button id="close-chat" class="absolute top-3 right-3 text-white hover:text-gray-200">
+                ✖
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="flex-1 p-4 space-y-2 overflow-y-auto bg-gray-50">
+            <div class="text-left">
+                <div class="bg-gray-200 text-gray-800 py-2 px-3 rounded-lg max-w-xs">
+                    Hello! How can we help you?
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="bg-blue-600 text-white py-2 px-3 rounded-lg max-w-xs">
+                    Hi, I need some assistance.
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="flex items-center border-t border-gray-300 p-2 bg-gray-100">
+            <input id="chat-input" type="text" placeholder="Type your message..." class="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button id="send-message" class="ml-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    const chatButton = document.getElementById('chat-button');
+    const chatBox = document.getElementById('chat-box');
+    const closeChat = document.getElementById('close-chat');
+
+    // Show the chat box when the chat button is clicked
+    chatButton.addEventListener('click', () => {
+        chatBox.classList.toggle('hidden');
+    });
+
+    // Close the chat box
+    closeChat.addEventListener('click', () => {
+        chatBox.classList.add('hidden');
+    });
+</script>

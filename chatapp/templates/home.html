@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-1/4 border-r border-slate-300 h-screen overflow-y-auto bg-white">
+      {% for room in rooms %}
+        <a href="{% url 'room' room_name=room.name %}" class="border-b border-slate-300 h-20 flex justify-start items-center">
+          <div class="h-16 w-16 rounded-full shadow-md border border-slate-100">
+            <img src="https://bisswas.com/media/ProductImg/500error.jpg" alt="" class="h-full w-full rounded-full" />
+          </div>
+          <div class="ml-5">
+            <p class="font-semibold">{{ room.name }}</p>
+            <p class="text-gray-500 font-sm">hi lian. how are you</p>
+          </div>
+        </a>
+      {% endfor %}
+
+      <form action="{% url 'new_room' %}" method="post" class="border-b border-slate-300 h-20 flex justify-start items-center">
+        {% csrf_token %}
+        <div class="ml-5">
+          <label for="">Create New Room</label>
+          <div class="flex">
+            <input type="text" name="room_name" id="" class="border border-slate-300 py-1" />
+            <input type="submit" id="" class="border border-slate-300 bg-blue-400 p-1 rounded" value="Create" />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="w-3/4 flex items-center justify-center">
+      <div class="w-full max-w-2xl bg-white shadow-lg rounded-lg">
+        <img src="https://bisswas.com/media/ProductImg/500error.jpg" alt="" class="opacity-50" />
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+daphne -b 192.168.10.198 -p 8000 livechat.asgi:application
