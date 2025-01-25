@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import ChatRoom
 
 
 def home(request):
-    rooms = ChatRoom.objects.all()
+    rooms = ChatRoom.objects.prefetch_related('messages')
     return render(request, 'home.html', {
         'rooms': rooms,
     })
@@ -21,12 +21,10 @@ def get_client_ip(request):
 def room(request, room_name):
     room, created = ChatRoom.objects.get_or_create(name=room_name)
     user_ip = get_client_ip(request)
-    messages = room.messages.all()  # Fetch previous messages
-    rooms = ChatRoom.objects.all()
+    rooms = ChatRoom.objects.prefetch_related('messages')
     return render(request, 'chat/room.html', {
         'room_name': room.name,
         'user_ip': user_ip,
-        'messages': messages,
         'rooms': rooms,
     })
 
@@ -38,3 +36,7 @@ def new_room(request):
             # Redirect to the newly created room
             return redirect('room', room_name=room_name)
     return render(request, 'new_room.html')
+
+def delete_room(request, id):
+    get_object_or_404(ChatRoom, id=id).delete()
+    return redirect('home')
